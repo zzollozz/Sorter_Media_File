@@ -1,0 +1,4 @@
+*.DS_Store
+*.idea
+.env
+no_repa

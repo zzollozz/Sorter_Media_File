@@ -2,3 +2,9 @@
 *.idea
 .env
 no_repa
+target/
+output/
+release/
+debug/
+*.log
+thumbs.db

@@ -10,18 +10,18 @@ from logger_setup import setup_logger
 
 def main() -> None:
     if len(sys.argv) != 3:
-        print("Usage: python3 main.py <source_dir> <dest_dir>")
+        print("Использование: python3 main.py <source_dir> <dest_dir>")
         sys.exit(1)
 
     source = Path(sys.argv[1])
     dest = Path(sys.argv[2])
 
     if not source.is_dir():
-        print(f"Source directory not found: {source}")
+        print(f"Каталог исходников не найден: {source}")
         sys.exit(1)
 
     setup_logger()
-    logger.info(f"Starting media sort: {source} -> {dest}")
+    logger.info(f"Стартовая сортировка медиа: {source} -> {dest}")
 
     processed = 0
     skipped = 0
@@ -32,20 +32,20 @@ def main() -> None:
 
         file_type = get_file_type(file_path)
         if file_type is None:
-            logger.debug(f"Skipping unsupported file: {file_path}")
+            logger.debug(f"Пропуск неподдерживаемого файла: {file_path}")
             skipped += 1
             continue
 
         date_str = get_creation_date(file_path)
         if date_str is None:
-            logger.warning(f"Cannot determine date, skipping: {file_path}")
+            logger.warning(f"Невозможно определить дату, пропуск: {file_path}")
             skipped += 1
             continue
 
         process_file(file_path, date_str, file_type, dest)
         processed += 1
 
-    logger.info(f"Done. Processed: {processed}, Skipped: {skipped}")
+    logger.info(f"Готово. Обработка: {processed}, Пропущено: {skipped}")
 
 
 if __name__ == "__main__":

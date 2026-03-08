@@ -25,13 +25,13 @@ def get_creation_date(file_path: Path) -> str | None:
                 dt = datetime.strptime(str(tags[tag]), "%Y:%m:%d %H:%M:%S")
                 return dt.strftime(DATE_FORMAT)
     except Exception as e:
-        logger.warning(f"EXIF read failed for {file_path}: {e}")
+        logger.warning(f"EXIF прочитал неудачно {file_path}: {e}")
 
     try:
         mtime = file_path.stat().st_mtime
         dt = datetime.fromtimestamp(mtime)
-        logger.warning(f"No EXIF date, using mtime for {file_path}")
+        logger.warning(f"Без EXIF-даты, использую mtime для {file_path}")
         return dt.strftime(DATE_FORMAT)
     except Exception as e:
-        logger.error(f"Cannot get date for {file_path}: {e}")
+        logger.error(f"Не могу найти дату {file_path}: {e}")
         return None

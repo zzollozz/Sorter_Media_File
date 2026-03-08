@@ -23,9 +23,9 @@ def copy_image(src: Path, dest_dir: Path) -> None:
     try:
         with Image.open(src) as img:
             img.save(dest_path, "WEBP", quality=85)
-        logger.info(f"Converted image: {src} -> {dest_path}")
+        logger.info(f"Конвертированное изображение: {src} -> {dest_path}")
     except Exception as e:
-        logger.error(f"Image conversion failed for {src}: {e}, copying as-is")
+        logger.error(f"Конвертация изображения не удалась для {src}: {e}, copying as-is")
         fallback = _unique_path(dest_dir, src.stem, src.suffix)
         shutil.copy2(src, fallback)
 
@@ -42,17 +42,17 @@ def copy_video(src: Path, dest_dir: Path) -> None:
     try:
         result = subprocess.run(cmd, capture_output=True, text=True)
         if result.returncode != 0:
-            logger.error(f"ffmpeg failed for {src}: {result.stderr}")
+            logger.error(f"ffmpeg неудача для {src}: {result.stderr}")
             fallback = _unique_path(dest_dir, src.stem, src.suffix)
             shutil.copy2(src, fallback)
         else:
-            logger.info(f"Transcoded video: {src} -> {dest_path}")
+            logger.info(f"Транскодированное видео: {src} -> {dest_path}")
     except FileNotFoundError:
-        logger.error("ffmpeg not found, copying video as-is")
+        logger.error("ffmpeg не найден, копирую видео как есть")
         fallback = _unique_path(dest_dir, src.stem, src.suffix)
         shutil.copy2(src, fallback)
     except Exception as e:
-        logger.error(f"Video copy failed for {src}: {e}")
+        logger.error(f"Видеокопирование не получилось {src}: {e}")
         fallback = _unique_path(dest_dir, src.stem, src.suffix)
         shutil.copy2(src, fallback)
 

@@ -1,0 +1,65 @@
+import shutil
+import subprocess
+from pathlib import Path
+
+from loguru import logger
+from PIL import Image
+
+from config import FOTO_SUBDIR, VIDEO_SUBDIR
+
+
+def _unique_path(dest_dir: Path, stem: str, suffix: str) -> Path:
+    dest = dest_dir / f"{stem}{suffix}"
+    counter = 1
+    while dest.exists():
+        dest = dest_dir / f"{stem}_{counter}{suffix}"
+        counter += 1
+    return dest
+
+
+def copy_image(src: Path, dest_dir: Path) -> None:
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    dest_path = _unique_path(dest_dir, src.stem, ".webp")
+    try:
+        with Image.open(src) as img:
+            img.save(dest_path, "WEBP", quality=85)
+        logger.info(f"Converted image: {src} -> {dest_path}")
+    except Exception as e:
+        logger.error(f"Image conversion failed for {src}: {e}, copying as-is")
+        fallback = _unique_path(dest_dir, src.stem, src.suffix)
+        shutil.copy2(src, fallback)
+
+
+def copy_video(src: Path, dest_dir: Path) -> None:
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    dest_path = _unique_path(dest_dir, src.stem, ".mp4")
+    cmd = [
+        "ffmpeg", "-i", str(src),
+        "-c:v", "libx265", "-preset", "medium", "-crf", "28",
+        "-c:a", "aac",
+        "-y", str(dest_path),
+    ]
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            logger.error(f"ffmpeg failed for {src}: {result.stderr}")
+            fallback = _unique_path(dest_dir, src.stem, src.suffix)
+            shutil.copy2(src, fallback)
+        else:
+            logger.info(f"Transcoded video: {src} -> {dest_path}")
+    except FileNotFoundError:
+        logger.error("ffmpeg not found, copying video as-is")
+        fallback = _unique_path(dest_dir, src.stem, src.suffix)
+        shutil.copy2(src, fallback)
+    except Exception as e:
+        logger.error(f"Video copy failed for {src}: {e}")
+        fallback = _unique_path(dest_dir, src.stem, src.suffix)
+        shutil.copy2(src, fallback)
+
+
+def process_file(src: Path, date_str: str, file_type: str, dest_root: Path) -> None:
+    dest_dir = dest_root / date_str / file_type
+    if file_type == FOTO_SUBDIR:
+        copy_image(src, dest_dir)
+    elif file_type == VIDEO_SUBDIR:
+        copy_video(src, dest_dir)

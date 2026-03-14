@@ -8,3 +8,4 @@ release/
 debug/
 *.log
 thumbs.db
+temp_log_worker_media_sorter.log

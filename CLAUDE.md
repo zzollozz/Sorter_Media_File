@@ -85,6 +85,7 @@ loguru==0.7.2
 Pillow==10.0.1
 exifread==3.0.0
 python-dateutil==2.9.0
+tqdm>=4.65.0
 ```
 
 `ffmpeg` устанавливается в виртуальное окружение проекта (`.venv/`), не системно.
@@ -99,3 +100,6 @@ python-dateutil==2.9.0
 - **Tests required**: any new logic in `file_processor.py` or `copier.py` must have a corresponding test in `tests/`.
 - **Unused dependencies**: `python-dateutil` is listed in requirements but not used — do not add new imports without using them.
 - **ffmpeg**: not a pip package — must be installed as a system binary on Debian 12; verify presence before use (check `FileNotFoundError`).
+- **Progress bar**: `tqdm` is used in `main.py` for terminal progress display; requires pre-collecting all files into a list first (for `total` count).
+- **Completion notification**: print() is called at the end of `main()` with summary stats — not logger, since stderr sink is CRITICAL-only.
+- **Unsupported formats**: System files (`Thumbs.db`, `.DS_Store`, `desktop.ini`) are skipped silently via `IGNORE_FILENAMES` in `config.py`. RAW camera formats (`.cr2`, `.nef`, `.arw`, `.dng`, `.raf`, `.orf`, `.rw2`) are in `IMAGE_EXTENSIONS`; Pillow cannot convert them → fallback `shutil.copy2()` runs automatically.

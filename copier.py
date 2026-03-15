@@ -35,8 +35,9 @@ def copy_video(src: Path, dest_dir: Path) -> None:
     dest_path = _unique_path(dest_dir, src.stem, ".mp4")
     cmd = [
         "ffmpeg", "-i", str(src),
-        "-c:v", "libx265", "-preset", "medium", "-crf", "28",
-        "-c:a", "aac",
+        "-c:v", "libx264", "-preset", "slow", "-crf", "23",
+        "-c:a", "aac", "-b:a", "128k",
+        "-movflags", "+faststart",
         "-y", str(dest_path),
     ]
     try:

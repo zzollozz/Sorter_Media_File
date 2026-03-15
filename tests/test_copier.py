@@ -75,6 +75,19 @@ class TestCopyVideo(unittest.TestCase):
             self.assertTrue(any(dest_dir.iterdir()))
 
 
+    @patch("copier.subprocess.run")
+    def test_ffmpeg_uses_h264_and_faststart(self, mock_run):
+        mock_run.return_value.returncode = 0
+        with tempfile.TemporaryDirectory() as tmpdir:
+            src = Path(tmpdir) / "clip.mp4"
+            src.touch()
+            dest_dir = Path(tmpdir) / "dest"
+            copy_video(src, dest_dir)
+            args = mock_run.call_args[0][0]
+            self.assertIn("libx264", args)
+            self.assertIn("+faststart", args)
+
+
 class TestProcessFile(unittest.TestCase):
     @patch("copier.copy_image")
     def test_foto_calls_copy_image(self, mock_copy):

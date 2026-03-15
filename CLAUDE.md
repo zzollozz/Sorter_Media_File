@@ -64,7 +64,7 @@ The project follows a modular structure defined in `start_main_doca.md`:
 | `main.py` | Entry point, CLI argument parsing |
 | `config.py` | Paths, date formats (`DD-MM-YYYY`), supported file extensions |
 | `file_processor.py` | EXIF metadata extraction (`exifread`), file type detection (photo/video) |
-| `copier.py` | File copying; image conversion to WebP (`Pillow`); video transcoding to H.265 via `subprocess` + `ffmpeg` |
+| `copier.py` | File copying; image conversion to WebP (`Pillow`); video transcoding to H.264 via `subprocess` + `ffmpeg` |
 | `logger_setup.py` | `loguru` config: all actions to `log_worker_media_sorter.log`, only critical errors to console |
 | `tests/` | `unittest`-based unit and integration tests for `file_processor` and `copier` |
 

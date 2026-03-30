@@ -6,7 +6,7 @@ from tqdm import tqdm
 
 from config import IGNORE_FILENAMES
 from copier import process_file
-from file_processor import get_creation_date, get_file_type
+from file_processor import get_file_type
 from logger_setup import setup_logger
 
 
@@ -48,14 +48,7 @@ def main() -> None:
                 pbar.update(1)
                 continue
 
-            date_str = get_creation_date(file_path)
-            if date_str is None:
-                logger.warning(f"Невозможно определить дату, пропуск: {file_path}")
-                skipped += 1
-                pbar.update(1)
-                continue
-
-            process_file(file_path, date_str, file_type, dest)
+            process_file(file_path, file_type, dest)
             processed += 1
             pbar.update(1)
 

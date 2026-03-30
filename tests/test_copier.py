@@ -74,7 +74,6 @@ class TestCopyVideo(unittest.TestCase):
 
             self.assertTrue(any(dest_dir.iterdir()))
 
-
     @patch("copier.subprocess.run")
     def test_ffmpeg_uses_h264_and_faststart(self, mock_run):
         mock_run.return_value.returncode = 0
@@ -90,14 +89,14 @@ class TestCopyVideo(unittest.TestCase):
 
 class TestProcessFile(unittest.TestCase):
     @patch("copier.copy_image")
-    def test_foto_calls_copy_image(self, mock_copy):
-        process_file(Path("test.jpg"), "15-05-2024", "foto", Path("/dest"))
-        mock_copy.assert_called_once_with(Path("test.jpg"), Path("/dest/15-05-2024/foto"))
+    def test_image_calls_copy_image(self, mock_copy):
+        process_file(Path("test.jpg"), "image", Path("/dest"))
+        mock_copy.assert_called_once_with(Path("test.jpg"), Path("/dest"))
 
     @patch("copier.copy_video")
     def test_video_calls_copy_video(self, mock_copy):
-        process_file(Path("test.mp4"), "15-05-2024", "video", Path("/dest"))
-        mock_copy.assert_called_once_with(Path("test.mp4"), Path("/dest/15-05-2024/video"))
+        process_file(Path("test.mp4"), "video", Path("/dest"))
+        mock_copy.assert_called_once_with(Path("test.mp4"), Path("/dest"))
 
 
 if __name__ == "__main__":

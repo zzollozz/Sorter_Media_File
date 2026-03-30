@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Python 3.11 media sorter that recursively traverses a source directory, extracts creation dates from media file EXIF metadata, and copies/converts files into a structured target directory sorted by date and type.
+Python 3.11 media converter that recursively traverses a source directory and copies/converts files directly into the target directory (flat structure, no subfolders).
 
-Target path format: `<dest>/DD-MM-YYYY/foto/` or `<dest>/DD-MM-YYYY/video/`
+Target path format: `<dest>/file_name.webp` or `<dest>/file_name.mp4`
 
 ## Commands
 
@@ -41,7 +41,7 @@ mcp__context7__query-docs  →  pass the resolved library ID + query
 ```
 
 Use context7 when:
-- Working with `loguru`, `Pillow`, `exifread`, `python-dateutil`
+- Working with `loguru`, `Pillow`, `python-dateutil`
 - Unsure about a Python stdlib module (pathlib, subprocess, datetime, shutil)
 - Checking correct API before proposing code changes
 
@@ -62,8 +62,8 @@ The project follows a modular structure defined in `start_main_doca.md`:
 | Module | Responsibility |
 |--------|---------------|
 | `main.py` | Entry point, CLI argument parsing |
-| `config.py` | Paths, date formats (`DD-MM-YYYY`), supported file extensions |
-| `file_processor.py` | EXIF metadata extraction (`exifread`), file type detection (photo/video) |
+| `config.py` | Supported file extensions, log file name |
+| `file_processor.py` | File type detection (image/video) |
 | `copier.py` | File copying; image conversion to WebP (`Pillow`); video transcoding to H.264 via `subprocess` + `ffmpeg` |
 | `logger_setup.py` | `loguru` config: all actions to `log_worker_media_sorter.log`, only critical errors to console |
 | `tests/` | `unittest`-based unit and integration tests for `file_processor` and `copier` |
@@ -74,7 +74,6 @@ The project follows a modular structure defined in `start_main_doca.md`:
 - **Source directory is read-only** — never write to source dir A.
 - **subprocess + ffmpeg**: use list-form args (never shell=True with user input) to avoid injection.
 - **Logging**: use `loguru`; log file = `log_worker_media_sorter.log`; console output = CRITICAL only.
-- **Date format**: folder names must be `DD-MM-YYYY` (e.g., `15-05-2024`).
 - **Target OS**: Debian 12 (avoid macOS-specific paths or APIs in production code).
 - **Sensitive data**: Never hardcode credentials, API keys, tokens, or configurable paths in source files. Define them as environment variables in `.env` and load via `python-dotenv` (add to requirements if needed). Add `.env` to `.gitignore`.
 
@@ -83,7 +82,6 @@ The project follows a modular structure defined in `start_main_doca.md`:
 ```
 loguru==0.7.2
 Pillow==10.0.1
-exifread==3.0.0
 python-dateutil==2.9.0
 tqdm>=4.65.0
 ```

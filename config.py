@@ -1,8 +1,3 @@
-DATE_FORMAT = "%d-%m-%Y"
-
-FOTO_SUBDIR = "foto"
-VIDEO_SUBDIR = "video"
-
 IMAGE_EXTENSIONS = {
     ".jpg", ".jpeg", ".png", ".gif", ".bmp",
     ".tiff", ".tif", ".heic", ".heif", ".webp",
@@ -18,4 +13,4 @@ VIDEO_EXTENSIONS = {
 # Системные файлы ОС — пропускаются без записи в лог
 IGNORE_FILENAMES = {"Thumbs.db", "thumbs.db", ".DS_Store", "desktop.ini"}
 
-LOG_FILE = "temp_log_worker_media_sorter.log"
+LOG_FILE = "log_worker_media_sorter.log"

@@ -5,8 +5,6 @@ from pathlib import Path
 from loguru import logger
 from PIL import Image
 
-from config import FOTO_SUBDIR, VIDEO_SUBDIR
-
 
 def _unique_path(dest_dir: Path, stem: str, suffix: str) -> Path:
     dest = dest_dir / f"{stem}{suffix}"
@@ -58,9 +56,8 @@ def copy_video(src: Path, dest_dir: Path) -> None:
         shutil.copy2(src, fallback)
 
 
-def process_file(src: Path, date_str: str, file_type: str, dest_root: Path) -> None:
-    dest_dir = dest_root / date_str / file_type
-    if file_type == FOTO_SUBDIR:
-        copy_image(src, dest_dir)
-    elif file_type == VIDEO_SUBDIR:
-        copy_video(src, dest_dir)
+def process_file(src: Path, file_type: str, dest_root: Path) -> None:
+    if file_type == "image":
+        copy_image(src, dest_root)
+    elif file_type == "video":
+        copy_video(src, dest_root)

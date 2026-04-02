@@ -7,7 +7,7 @@ IMAGE_EXTENSIONS = {
 
 VIDEO_EXTENSIONS = {
     ".mp4", ".mov", ".avi", ".mkv", ".wmv",
-    ".flv", ".m4v", ".3gp", ".mts", ".m2ts",
+    ".flv", ".m4v", ".3gp", ".mts", ".m2ts", ".ts",
 }
 
 # Системные файлы ОС — пропускаются без записи в лог

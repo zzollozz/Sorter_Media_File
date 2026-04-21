@@ -8,9 +8,12 @@ IMAGE_EXTENSIONS = {
 VIDEO_EXTENSIONS = {
     ".mp4", ".mov", ".avi", ".mkv", ".wmv",
     ".flv", ".m4v", ".3gp", ".mts", ".m2ts", ".ts",
+    ".mpg", ".mpeg",
 }
 
 # Системные файлы ОС — пропускаются без записи в лог
 IGNORE_FILENAMES = {"Thumbs.db", "thumbs.db", ".DS_Store", "desktop.ini"}
+
+DVD_FOLDER_NAME = "VIDEO_TS"
 
 LOG_FILE = "log_worker_media_sorter.log"

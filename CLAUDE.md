@@ -94,10 +94,10 @@ tqdm>=4.65.0
 - **Path handling**: use `pathlib.Path` throughout — never string concatenation for paths.
 - **Type hints**: all function signatures must include type hints (match existing code style).
 - **No global state**: configuration lives in `config.py`; no module-level mutable globals.
-- **Fallback safety**: if conversion fails (WebP, ffmpeg), fall back to raw `shutil.copy2()` — never silently drop files.
+- **Fallback safety**: if conversion fails (WebP, ffmpeg), fall back to raw file copy via `_safe_copy()` (uses `shutil.copyfileobj`) — never silently drop files. Do NOT use `shutil.copy2` — it calls `chmod` which fails on SMB/gvfs mounts with `[Errno 95]`.
 - **Tests required**: any new logic in `file_processor.py` or `copier.py` must have a corresponding test in `tests/`.
 - **Unused dependencies**: `python-dateutil` is listed in requirements but not used — do not add new imports without using them.
 - **ffmpeg**: not a pip package — must be installed as a system binary on Debian 12; verify presence before use (check `FileNotFoundError`).
 - **Progress bar**: `tqdm` is used in `main.py` for terminal progress display; requires pre-collecting all files into a list first (for `total` count).
 - **Completion notification**: print() is called at the end of `main()` with summary stats — not logger, since stderr sink is CRITICAL-only.
-- **Unsupported formats**: System files (`Thumbs.db`, `.DS_Store`, `desktop.ini`) are skipped silently via `IGNORE_FILENAMES` in `config.py`. RAW camera formats (`.cr2`, `.nef`, `.arw`, `.dng`, `.raf`, `.orf`, `.rw2`) are in `IMAGE_EXTENSIONS`; Pillow cannot convert them → fallback `shutil.copy2()` runs automatically.
+- **Unsupported formats**: System files (`Thumbs.db`, `.DS_Store`, `desktop.ini`) are skipped silently via `IGNORE_FILENAMES` in `config.py`. RAW camera formats (`.cr2`, `.nef`, `.arw`, `.dng`, `.raf`, `.orf`, `.rw2`) are in `IMAGE_EXTENSIONS`; Pillow cannot convert them → fallback `_safe_copy()` runs automatically.

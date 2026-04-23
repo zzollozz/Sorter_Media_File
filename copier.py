@@ -34,19 +34,22 @@ def copy_video(src: Path, dest_dir: Path) -> None:
     dest_path = _unique_path(dest_dir, src.stem, ".mp4")
     cmd = [
         "ffmpeg", "-i", str(src),
+        "-map", "0",
         "-c:v", "libx264", "-preset", "slow", "-crf", "23",
-        "-c:a", "aac", "-b:a", "128k",
+        "-pix_fmt", "yuv420p",
+        "-c:a", "aac", "-ac", "2", "-ar", "44100", "-b:a", "128k",
         "-movflags", "+faststart",
         "-y", str(dest_path),
     ]
     try:
         result = subprocess.run(cmd, capture_output=True, text=True)
-        if result.returncode != 0:
-            logger.error(f"ffmpeg неудача для {src}: {result.stderr}")
+        if result.returncode == 0 and dest_path.exists() and dest_path.stat().st_size > 10_240:
+            logger.info(f"Транскодированное видео: {src} -> {dest_path}")
+        else:
+            logger.error(f"ffmpeg неудача для {src}: {result.stderr[-300:]}")
+            dest_path.unlink(missing_ok=True)
             fallback = _unique_path(dest_dir, src.stem, src.suffix)
             shutil.copy2(src, fallback)
-        else:
-            logger.info(f"Транскодированное видео: {src} -> {dest_path}")
     except FileNotFoundError:
         logger.error("ffmpeg не найден, копирую видео как есть")
         fallback = _unique_path(dest_dir, src.stem, src.suffix)
